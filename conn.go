@@ -508,8 +508,9 @@ func (w messageWriter) write(final bool, p []byte) (int, error) {
 	if err := w.err(); err != nil {
 		return 0, err
 	}
-
-	if len(p) > 2*len(w.c.writeBuf) && w.c.isServer {
+	// Don't buffer the messages since it causes them to be sent in multiple frames
+	//if len(p) > 2*len(w.c.writeBuf) && w.c.isServer {
+	if w.c.isServer {
 		// Don't buffer large messages.
 		err := w.c.flushFrame(final, p)
 		if err != nil {
